@@ -50,11 +50,11 @@ const Pools = () => {
     // A pool is skipped if alocPoint is 0
     // Rendered pools is technically a counter that points to the latest pool
     const renderedPools = useMemo( () => {
-        return offset * 15 + additional;
+        return offset * 10 + additional;
     },[offset, additional])
 
     const onScroll = () => {
-        if (offset * 15 + additional > poolLength) return
+        if (offset * 3 + additional > poolLength) return
         if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 100 ){
             setOffset( offset => offset + 1)
         }

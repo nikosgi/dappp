@@ -85,6 +85,7 @@ const Rewards = ({MasterChef,token, allocPoint}) => {
                 allocPoint={allocPoint}
                 totalAllocPoint={totalAllocPoint}
                 rewardsPerBlock={rewardsPerBlock}
+                cakePerBlock={cakePerBlock}
             />
             
         </>

@@ -6,7 +6,6 @@ import Main from './features/Main/Main.js'
 
 
 function getLibrary(provider, connector) {
-  console.log(provider,connector);
   return new web3(provider) // this will vary according to whether you use e.g. ethers or web3.js
 }
 

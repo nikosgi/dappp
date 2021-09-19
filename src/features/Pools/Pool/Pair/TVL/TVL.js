@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import retry from 'async-retry';
 
 import './TVL.css'
+import { useWeb3React } from "@web3-react/core";
 
 
 
 const TVL = ({CakeLP, pair}) => {
 
+    const {library} = useWeb3React();
     const [supply, setSupply] = useState()
+    const [total, setTotal] = useState()
     const [reserves, setReserves] = useState([])
     const [prices, setPrices] = useState([])
     
@@ -37,8 +40,10 @@ const TVL = ({CakeLP, pair}) => {
             async () => {
                 const {_reserve0, _reserve1} = await CakeLP.current.methods.getReserves().call();
                 const supply = await CakeLP.current.methods.totalSupply().call();
-                setReserves([_reserve0,_reserve1])
-                setSupply(supply)
+                const total =  await CakeLP.current.methods.balanceOf("0x73feaa1eE314F8c655E354234017bE2193C9E24E").call()
+                setReserves([library.utils.fromWei(_reserve0),library.utils.fromWei(_reserve1)])
+                setSupply(library.utils.fromWei(supply))
+                setTotal(library.utils.fromWei(total))
                 setFetchingReserves(false)
             }
         )
@@ -68,7 +73,6 @@ const TVL = ({CakeLP, pair}) => {
         )
     }
 
-
     return (
     
         <div className="container order">
@@ -83,7 +87,7 @@ const TVL = ({CakeLP, pair}) => {
                             ?
                                 <p>
                                     { reserves.length === 2 && prices.length === 2 
-                                        ? ((reserves[0]*prices[0].usd + reserves[1]*prices[1].usd)/supply).toFixed(2) + '$'
+                                        ? ((reserves[0]*prices[0].usd + reserves[1]*prices[1].usd) / supply * total / 1000000).toFixed(2) + 'M'
                                         : '-'
                                     }
                                 </p>
