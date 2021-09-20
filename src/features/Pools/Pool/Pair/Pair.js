@@ -5,7 +5,6 @@ import retry from 'async-retry';
 
 import {CakeLPABI} from '../../../../ABI/CakeLP';
 import Symbol from './Symbol/Symbol';
-import TVL from './TVL/TVL'
 
 
 const Pair = ({token, skip}) => {
@@ -36,7 +35,6 @@ const Pair = ({token, skip}) => {
                     setPair([token0, token1])
                     setFetching(false)
                 }else{
-                    console.log('skipping')
                     skip()
                 }
 
@@ -53,7 +51,6 @@ const Pair = ({token, skip}) => {
                 ?
                     <>
                         <div className="skeleton div"/>
-                        <div className="skeleton div order"/>
                     </>
                 :
                 <>
@@ -62,9 +59,7 @@ const Pair = ({token, skip}) => {
                             <div className="container">
                                 <Symbol bold token={pair[0]}/>
                                 <Symbol token={pair[1]}/>
-                            </div>
-                            <TVL pair={pair} CakeLP={CakeLP}/>
-                            
+                            </div>                            
                         </>
                     }
                 </>

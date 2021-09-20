@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useWeb3React  } from '@web3-react/core';
 import retry from 'async-retry';
-import APR from './APR/APR'
+import Bonus from './Bonus/Bonus'
 
 const Rewards = ({MasterChef,token, allocPoint}) => {
 
@@ -79,7 +79,7 @@ const Rewards = ({MasterChef,token, allocPoint}) => {
                     }
                 </>
             </div>
-            <APR
+            <Bonus
                 MasterChef={MasterChef}
                 token={token}
                 allocPoint={allocPoint}

@@ -3,7 +3,6 @@ import retry from 'async-retry';
 import Pair from './Pair/Pair.js'
 import Rewards from "./Rewards/Rewards.js";
 import './Pool.css'
-// import TVL from "./Pair/TVL/TVL.js";
 
 const Pool = ({index, MasterChef, skip}) => {
     const [info, setPool] = useState();
@@ -28,8 +27,7 @@ const Pool = ({index, MasterChef, skip}) => {
                 const info = await MasterChef.current.methods.poolInfo(index).call();
                 if (parseInt(info.allocPoint) === 0){
                     skip()
-                }
-                
+                }                
                 setPool(info);       
             }
         )

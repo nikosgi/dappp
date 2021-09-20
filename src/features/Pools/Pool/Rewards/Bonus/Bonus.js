@@ -3,9 +3,8 @@ import retry from 'async-retry';
 
 import {CakeLPABI} from '../../../../../ABI/CakeLP';
 import { useWeb3React  } from '@web3-react/core';
-import { BN }  from 'bn.js';
-import { traverseTwoPhase } from "react-dom/cjs/react-dom-test-utils.production.min";
 
+import { MASTERCHEF_ADDRESS } from "../../../../../constants/addresses";
 
 
 
@@ -19,7 +18,6 @@ const APR = ({MasterChef, token, cakePerBlock, allocPoint, totalAllocPoint}) => 
     const [supply, setSupply] = useState()
     const [reserves, setReserves] = useState([])
     const [prices, setPrices] = useState([])
-    const [pair, setPair] = useState()
 
     const [fetchingPrices, setFetchingPrices] = useState(true)
     const [fetchingReserves, setFetchingReserves] = useState(true)
@@ -40,10 +38,7 @@ const APR = ({MasterChef, token, cakePerBlock, allocPoint, totalAllocPoint}) => 
         await retry(
             async () => {
                 const cake = await MasterChef.current.methods.cake().call()
-                const balance = await CakeLP.current.methods.balanceOf("0x73feaa1eE314F8c655E354234017bE2193C9E24E").call()
-                // There is an issue here which I couldn't manage to solve
-                // It should take into account the decimals of the token
-                // because on < 18 decimals APR is not correct
+                const balance = await CakeLP.current.methods.balanceOf(MASTERCHEF_ADDRESS).call()
                 setTotal(library.utils.fromWei(balance))
                 getPrice(cake);
             }
@@ -90,17 +85,13 @@ const APR = ({MasterChef, token, cakePerBlock, allocPoint, totalAllocPoint}) => 
                     setFetching(true)
                     const token0 = await CakeLP.current.methods.token0().call();
                     const token1 = await CakeLP.current.methods.token1().call();
-                    setPair([token0, token1])
                     getPrices([token0,token1])
                     setFetching(false)
                 }
 
             }
         )
-        
-
     }
-
 
     const getPrices = async (pair) => {
         await retry(
@@ -126,15 +117,14 @@ const APR = ({MasterChef, token, cakePerBlock, allocPoint, totalAllocPoint}) => 
         )
     }
 
+    const TVL = (reserves,prices,supply,total) => (reserves[0]*prices[0].usd + reserves[1]*prices[1].usd ) / supply * total
 
     const dollarPerBlock = useMemo( () => {
 
         if (prices && prices.length === 2 && total && price){
-            const TVL = (reserves[0]*prices[0].usd + reserves[1]*prices[1].usd ) / supply * total
-
             const rewardsPerBlockValue = cakePerBlock * price.usd;
 
-            const rewardsPerShare = rewardsPerBlockValue * (allocPoint / totalAllocPoint) / TVL;  
+            const rewardsPerShare = rewardsPerBlockValue * (allocPoint / totalAllocPoint) / TVL(reserves,prices,supply,total);  
 
             const APR = rewardsPerShare * 10518984 * 100 ;
             return APR.toFixed(2).toString() + '%'
@@ -148,8 +138,28 @@ const APR = ({MasterChef, token, cakePerBlock, allocPoint, totalAllocPoint}) => 
 
    
 
-    return (
-
+    return ( <>
+        <div className="container order">
+            <p className="bold">TVL</p>
+            {
+                (fetchingReserves || fetchingPrices) 
+                ?
+                    <div className="skeleton paragraph"/>
+                :
+                    <>
+                        { (reserves && supply && prices )
+                            ?
+                                <p>
+                                    { reserves.length === 2 && prices.length === 2 
+                                        ? ( TVL(reserves,prices,supply,total) / 1000000).toFixed(2) + 'M'
+                                        : '-'
+                                    }
+                                </p>
+                            : <p>-</p>
+                        }
+                    </>
+            }   
+        </div>
         <div className="container">                        
             <p className="bold"> APR </p>
             { 
@@ -165,7 +175,7 @@ const APR = ({MasterChef, token, cakePerBlock, allocPoint, totalAllocPoint}) => 
                     </>
             }
         </div>
-
+    </>
     )
 }
 
