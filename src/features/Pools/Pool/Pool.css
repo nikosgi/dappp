@@ -1,0 +1,24 @@
+.pool-root {
+    height: 80px;
+
+    padding: 10px 25px;
+    border-bottom: 1px solid white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 100px;    
+    margin: 0px 15px;
+}
+
+.container > p {
+    color:#fcfcfc;
+    font-size: 15px;
+}

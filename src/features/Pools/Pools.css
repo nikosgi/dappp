@@ -1,0 +1,53 @@
+.pools-container {
+    margin: 25px auto;
+    max-width: 800px;
+    background-color: rgb(118 99 69);
+    box-shadow: 0px 0px 5px 0px rgb(193, 199, 204);
+    border-radius: 15px;
+}
+
+.skeleton {
+    background-color: #a38c68;
+    overflow: hidden;
+    position: relative;
+    margin: 0px 15px;
+}
+
+.skeleton::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+        90deg,
+        rgb(232 181 102 / 0) 0,
+        rgb(232 181 102 / 5%) 20%,
+  
+        rgb(233 181 102 / 50%) 60%,
+  
+        rgba(232 181 102 / 15%) 80%,
+        rgb(232 181 102 / 0)
+  
+    );
+    animation: shimmer 2s infinite;
+    content: '';
+}
+
+.skeleton.paragraph {
+    height: 17px;
+    margin: 2px 0px;
+    width: 100%;
+}
+
+.skeleton.div {
+    height: 40px;
+    width: 100px;
+}
+
+@keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
